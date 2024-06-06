@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TodoService } from '../services/todo-service.service';
+import { CdcService } from '../services/cdc.service';
 
 @Component({
   selector: 'app-tab3',
@@ -7,10 +8,10 @@ import { TodoService } from '../services/todo-service.service';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit {
-
+  isSyncProgress: boolean = false;
   data: any[] = [];
 
-  constructor(private todoService: TodoService) {}
+  constructor(private todoService: TodoService, private cdc: CdcService) {}
 
   ngOnInit() {
     this.loadData();
@@ -18,6 +19,16 @@ export class Tab3Page implements OnInit {
 
   async loadData() {
     this.data = await this.todoService.runQuery('SELECT * FROM cdc');
+  }
+
+  async startSync() {
+    this.isSyncProgress = true;
+    try {
+      await this.cdc.synCdcData();
+      this.isSyncProgress = false;
+    } catch(e) {
+      this.isSyncProgress = false;
+    }
   }
 
 }

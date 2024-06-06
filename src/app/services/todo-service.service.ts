@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataSource, FindManyOptions } from 'typeorm';
 import todoDataSource from '../databases/datasources/TodoDataSource';
-import { Todo } from '../databases/entities';
+import { CDC, Todo } from '../databases/entities';
 import sqliteParams from '../databases/sqliteParams';
 
 @Injectable({
@@ -27,7 +27,7 @@ export class TodoService {
     return this.connection.getRepository(Todo);
   }
 
-  async saveInventoryDb() {
+  async saveTodoDB() {
     //Temporary fix to keep saved data across browser refresh
     if(sqliteParams.platform === 'web') {
       await sqliteParams.connection.saveToStore(todoDataSource.dbName); 
@@ -51,7 +51,7 @@ export class TodoService {
     newTodo.completed = todo.completed || false;
 
     const res = await this.todoRepository.save(newTodo);
-    await this.saveInventoryDb();
+    await this.saveTodoDB();
     return res;
   }
 
@@ -65,9 +65,11 @@ export class TodoService {
     if(!isExists) throw "Todo not found";
 
     const update = await this.todoRepository.update(id, {
+      id,
       title: todo.title,
       completed: todo.completed
     });
+    await this.saveTodoDB();
     console.log(update);
     return update;
   }
@@ -84,6 +86,7 @@ export class TodoService {
     }
 
     const res = await this.todoRepository.remove(todoToRemove)
+    await this.saveTodoDB();
     console.log(res);
     return res;
   }

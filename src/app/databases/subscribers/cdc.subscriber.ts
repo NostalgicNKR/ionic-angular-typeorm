@@ -30,6 +30,8 @@ export class CdcSubscriber implements EntitySubscriberInterface {
      * Called after entity update.
      */
      async afterUpdate(event: UpdateEvent<any>) {
+        console.log(event)
+
         const cdcRepository = event.manager.getRepository(CDC);
         await cdcRepository.save({
             table_name: event.metadata.tableName,
@@ -44,7 +46,6 @@ export class CdcSubscriber implements EntitySubscriberInterface {
      * Called after entity removal.
      */
     async afterRemove(event: RemoveEvent<any>) {
-        console.log(event)
         const cdcRepository = event.manager.getRepository(CDC);
         await cdcRepository.save({
             table_name: event.metadata.tableName,
