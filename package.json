@@ -6,10 +6,22 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "build:web": "npm run copy:sql:wasm && ng build",
+    "build:native": "npm run remove:sql:wasm && ng build",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "watch": "npm run copy:sql:wasm && ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:dev": "ng build --configuration development",
+    "ionic:serve:before": "npm run copy:sql:wasm",
+    "copy:sql:wasm": "copyfiles -u 3 node_modules/sql.js/dist/sql-wasm.wasm src/assets",
+    "remove:sql:wasm": "rimraf src/assets/sql-wasm.wasm",
+    "ionic:ios": "npm run remove:sql:wasm && ionic capacitor build ios",
+    "ionic:android": "npm run remove:sql:wasm && ionic capacitor build android",
+    "electron:install": "cd electron && npm install && cd ..",
+    "electron:prepare": "npm run remove:sql:wasm && ng build && npx cap sync @capacitor-community/electron && npx cap copy @capacitor-community/electron",
+    "electron:start": "npm run electron:prepare && cd electron && npm run electron:start",
+    "postinstall": "node ./scripts/modify-typeorm.cjs"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +40,8 @@
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
     "@ionic/angular": "^8.0.0",
+    "@ionic/pwa-elements": "^3.3.0",
+    "copyfiles": "^2.4.1",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
