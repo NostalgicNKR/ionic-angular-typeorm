@@ -13,5 +13,21 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-list class="ion-padding">
+    <form [formGroup]="form">
+      <ion-item>
+        <ion-input label="Todo Name" formControlName="title" placeholder="Enter Todo name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Completed" formControlName="completed" placeholder="Is it completed?">
+          <ion-select-option [value]="true">Completed</ion-select-option>
+          <ion-select-option [value]="false" >Pending</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button (click)="saveTodo()">Save Todo</ion-button>
+    </form>
+  </ion-list>
+
 </ion-content>

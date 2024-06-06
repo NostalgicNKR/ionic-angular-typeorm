@@ -12,6 +12,12 @@
       <ion-title size="large">Tab 1</ion-title>
     </ion-toolbar>
   </ion-header>
+  
+  <ion-list *ngFor="let todo of todos">
+    <ion-item>
+      <ion-label>{{todo.title}}</ion-label>
+      <ion-badge [color]="todo.completed ? 'success' : 'warning'">{{todo.completed ? "Complete" : "Pending"}}</ion-badge>
+    </ion-item>
+  </ion-list>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
 </ion-content>

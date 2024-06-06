@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { DataSource, FindManyOptions } from 'typeorm';
 import todoDataSource from '../databases/datasources/TodoDataSource';
 import { Todo } from '../databases/entities';
+import sqliteParams from '../databases/sqliteParams';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TodoServiceService {
+export class TodoService {
   private connection: DataSource;
 
   constructor() { 
@@ -16,6 +17,13 @@ export class TodoServiceService {
 
   get todoRepository() {
     return this.connection.getRepository(Todo);
+  }
+
+  async saveInventoryDb() {
+    //Temporary fix to keep saved data across browser refresh
+    if(sqliteParams.platform === 'web') {
+      await sqliteParams.connection.saveToStore(todoDataSource.dbName); 
+    }
   }
 
   async getTodos(id?: number) {
@@ -32,9 +40,10 @@ export class TodoServiceService {
     const newTodo = new Todo();
 
     newTodo.title = todo.title || '';
-    newTodo.completed = false;
+    newTodo.completed = todo.completed || false;
 
     const res = await this.todoRepository.save(newTodo);
+    await this.saveInventoryDb();
     return res;
   }
 }

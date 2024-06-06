@@ -2,6 +2,7 @@ import { DataSource , type DataSourceOptions} from 'typeorm';
 import * as entities from '../entities/';
 import * as migrations from '../migrations/';
 import sqliteParams from '../sqliteParams';
+import { CdcSubscriber } from '../subscribers/cdc.subscriber';
 
 const dbName = "TODO";
 
@@ -13,7 +14,7 @@ const dataSourceConfig: DataSourceOptions = {
   mode: 'no-encryption',
   entities: entities,
   migrations: migrations, //["../migrations/author/*{.ts,.js}"]
-  subscribers: [],
+  subscribers: [CdcSubscriber],
   logging: [/*'query',*/ 'error','schema'],
   synchronize: false,     // !!!You will lose all data in database if set to `true`
   migrationsRun: false  // Required with capacitor type
