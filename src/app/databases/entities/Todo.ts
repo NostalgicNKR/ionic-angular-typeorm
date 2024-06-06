@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity('todo')
 export class Todo {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column()
     title!: string;

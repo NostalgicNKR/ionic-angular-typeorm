@@ -15,6 +15,14 @@ export class TodoService {
 
   }
 
+  
+  async runQuery(query: string): Promise<any> {
+    if (!this.connection.createQueryRunner()) {
+      throw new Error('QueryRunner not initialized');
+    }
+    return this.connection.createQueryRunner().query(query);
+  }
+
   get todoRepository() {
     return this.connection.getRepository(Todo);
   }
@@ -44,6 +52,39 @@ export class TodoService {
 
     const res = await this.todoRepository.save(newTodo);
     await this.saveInventoryDb();
+    return res;
+  }
+
+  async updateTodo(id: number, todo: Partial<Todo>) {
+    const isExists = await this.todoRepository.findOne({
+      where: {
+        id
+      }
+    });
+
+    if(!isExists) throw "Todo not found";
+
+    const update = await this.todoRepository.update(id, {
+      title: todo.title,
+      completed: todo.completed
+    });
+    console.log(update);
+    return update;
+  }
+
+  async deleteTodo(id: number) {
+
+    const todoToRemove = await this.todoRepository.findOne({
+      where: {
+        id
+      }
+    });
+    if (!todoToRemove) {
+        throw new Error(`Todo with ID ${id} not found`);
+    }
+
+    const res = await this.todoRepository.remove(todoToRemove)
+    console.log(res);
     return res;
   }
 }

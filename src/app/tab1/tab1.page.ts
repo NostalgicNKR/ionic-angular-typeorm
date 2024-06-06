@@ -13,7 +13,16 @@ export class Tab1Page {
 
   todos!: Todo[];
   async ionViewDidEnter() {
+    await this.fetchTodos();
+  }
+
+  async fetchTodos() {
     this.todos = await this.todoService.getTodos();
+  }
+
+  async delete(id: number) {
+    await this.todoService.deleteTodo(id);
+    await this.fetchTodos();
   }
 
 }

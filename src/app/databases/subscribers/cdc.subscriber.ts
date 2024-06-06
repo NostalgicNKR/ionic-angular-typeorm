@@ -44,10 +44,11 @@ export class CdcSubscriber implements EntitySubscriberInterface {
      * Called after entity removal.
      */
     async afterRemove(event: RemoveEvent<any>) {
+        console.log(event)
         const cdcRepository = event.manager.getRepository(CDC);
         await cdcRepository.save({
             table_name: event.metadata.tableName,
-            row_id: event.entity.id,
+            row_id: event.entity.id || event.databaseEntity.id || event.entityId,
             operation_type: 'DELETE',
             changed_data: JSON.stringify(event.databaseEntity),
             metadata: JSON.stringify({ user: 'exampleUser', device: 'exampleDevice' }),
